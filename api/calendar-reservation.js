@@ -8,7 +8,11 @@
  * - 環境変数の自動サニタイズ
  */
 
-import { getEnv } from '../utils/env-helper.js';
+// 環境変数ヘルパー関数
+function getEnv(key, defaultValue = '') {
+  const value = process.env[key] || defaultValue;
+  return typeof value === 'string' ? value.trim() : value;
+}
 
 /**
  * 予約ID生成

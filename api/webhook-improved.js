@@ -10,7 +10,11 @@
  * - 環境変数自動サニタイズ
  */
 
-import { getEnv, sanitizeUrl } from '../utils/env-helper.js';
+// 環境変数ヘルパー関数
+function getEnv(key, defaultValue = '') {
+  const value = process.env[key] || defaultValue;
+  return typeof value === 'string' ? value.trim() : value;
+}
 
 /**
  * LINE返信メッセージ送信
