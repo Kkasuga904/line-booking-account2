@@ -1205,7 +1205,7 @@
         }
         
         // 成功画面表示
-        function showSuccess(reservation) {
+        async function showSuccess(reservation) {
             document.getElementById('confirmStep').style.display = 'none';
             document.getElementById('successStep').style.display = 'block';
             
@@ -1218,6 +1218,19 @@
                 step.classList.add('completed');
                 step.classList.remove('active');
             });
+            
+            // LINEトークにメッセージを送信
+            if (typeof liff !== 'undefined' && liff.isInClient()) {
+                try {
+                    await liff.sendMessages([{
+                        type: 'text',
+                        text: `✅ 予約が完了しました！\n\n📅 ${formatDate(selectedDate)}\n🕐 ${selectedTime}\n👤 ${peopleCount}名\n📝 予約番号: #${reservation.id}\n\nご来店をお待ちしております。`
+                    }]);
+                    console.log('予約完了メッセージを送信しました');
+                } catch (error) {
+                    console.error('メッセージ送信エラー:', error);
+                }
+            }
         }
         
         // LIFF閉じる
