@@ -3,10 +3,13 @@
   "functions": {
     "api/*.js": {
       "maxDuration": 10
+    },
+    "api/*.cjs": {
+      "maxDuration": 10
     }
   },
   "rewrites": [
-    { "source": "/webhook", "destination": "/api/webhook-handler" },
+    { "source": "/webhook", "destination": "/api/webhook-v3.cjs" },
     { "source": "/admin", "destination": "/admin.html" }
   ]
 }

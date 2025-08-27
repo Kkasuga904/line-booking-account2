@@ -1169,10 +1169,10 @@
             document.getElementById('confirmSubmitBtn').disabled = true;
             document.getElementById('confirmSubmitBtn').textContent = '送信中...';
             
-            // APIエンドポイント（save-booking-v2に変更してキャッシュ回避）
+            // APIエンドポイント（save-reservation.cjsに変更してキャッシュ回避）
             const apiUrl = window.location.hostname === 'localhost' 
-                ? 'http://localhost:3000/api/save-booking-v2'
-                : '/api/save-booking-v2';
+                ? 'http://localhost:3000/api/save-reservation.cjs'
+                : '/api/save-reservation.cjs';
             
             try {
                 const response = await fetch(apiUrl, {
