@@ -1,4 +1,6 @@
-// LINE Webhook - Direct implementation with reply
+// LINE Webhook - Using https module for better compatibility
+import https from 'https';
+
 export default async function handler(req, res) {
   console.log('=== Webhook Start ===');
   
@@ -32,29 +34,51 @@ export default async function handler(req, res) {
     
     console.log('Token exists, sending reply...');
     
-    const response = await fetch('https://api.line.me/v2/bot/message/reply', {
+    // Using https module instead of fetch
+    const postData = JSON.stringify({
+      replyToken: event.replyToken,
+      messages: [{
+        type: 'text',  
+        text: `メッセージありがとうございます！\n\nご予約はカレンダーからどうぞ：\nhttps://liff.line.me/2008001308-gDrXL5Y1`
+      }]
+    });
+    
+    const options = {
+      hostname: 'api.line.me',
+      port: 443,
+      path: '/v2/bot/message/reply',
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        replyToken: event.replyToken,
-        messages: [{
-          type: 'text',  
-          text: `メッセージありがとうございます！\n\nご予約はカレンダーからどうぞ：\nhttps://liff.line.me/2008001308-gDrXL5Y1`
-        }]
-      })
+        'Content-Type': 'application/json',
+        'Content-Length': Buffer.byteLength(postData)
+      }
+    };
+    
+    const replyRequest = https.request(options, (replyRes) => {
+      let data = '';
+      
+      replyRes.on('data', (chunk) => {
+        data += chunk;
+      });
+      
+      replyRes.on('end', () => {
+        if (replyRes.statusCode === 200) {
+          console.log('✅ Reply sent successfully!');
+        } else {
+          console.error('LINE API ERROR:', replyRes.statusCode);
+          console.error('Error details:', data);
+          console.error('Token preview:', token.substring(0, 10) + '...' + token.slice(-4));
+        }
+      });
     });
     
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('LINE API ERROR:', response.status);
-      console.error('Error details:', errorText);
-      console.error('Token preview:', token.substring(0, 10) + '...' + token.slice(-4));
-    } else {
-      console.log('✅ Reply sent successfully!');
-    }
+    replyRequest.on('error', (e) => {
+      console.error('Request error:', e.message);
+    });
+    
+    replyRequest.write(postData);
+    replyRequest.end();
     
   } catch (e) {
     console.error('Exception in webhook:', e.message);
