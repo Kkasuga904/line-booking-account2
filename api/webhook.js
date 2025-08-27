@@ -55,7 +55,11 @@ export default async function handler(req, res) {
       }
     };
     
+    console.log('Sending to LINE API...');
     const replyRequest = https.request(options, (replyRes) => {
+      console.log('LINE API Response Status:', replyRes.statusCode);
+      console.log('LINE API Response Headers:', replyRes.headers);
+      
       let data = '';
       
       replyRes.on('data', (chunk) => {
@@ -63,10 +67,11 @@ export default async function handler(req, res) {
       });
       
       replyRes.on('end', () => {
+        console.log('LINE API Response Body:', data);
         if (replyRes.statusCode === 200) {
           console.log('✅ Reply sent successfully!');
         } else {
-          console.error('LINE API ERROR:', replyRes.statusCode);
+          console.error('❌ LINE API ERROR:', replyRes.statusCode);
           console.error('Error details:', data);
           console.error('Token preview:', token.substring(0, 10) + '...' + token.slice(-4));
         }
@@ -74,11 +79,14 @@ export default async function handler(req, res) {
     });
     
     replyRequest.on('error', (e) => {
-      console.error('Request error:', e.message);
+      console.error('HTTPS Request error:', e.message);
+      console.error('Error stack:', e.stack);
     });
     
+    console.log('Writing POST data:', postData);
     replyRequest.write(postData);
     replyRequest.end();
+    console.log('Request sent to LINE API');
     
   } catch (e) {
     console.error('Exception in webhook:', e.message);
