@@ -1,17 +1,16 @@
 /**
- * カレンダーからの予約受付API
+ * カレンダーからの予約受付API（Supabase連携版）
  * 
  * 主な機能：
  * - LIFFカレンダーUIからの予約受付
  * - バリデーション処理
  * - Supabaseデータベースへの保存
  * - 予約ID発行
- * - 環境変数の自動サニタイズ
  */
 
 import { createClient } from '@supabase/supabase-js';
 
-// Supabase設定（Account 2専用）
+// Supabase設定
 const SUPABASE_URL = 'https://faenvzzeguvlconvrqgp.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZhZW52enplZ3V2bGNvbnZycWdwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYxNzQyOTgsImV4cCI6MjA3MTc1MDI5OH0.U_v82IYSDM3waCFfFr4e7MpbTQmZFRPCNaA-2u5R3d8';
 
@@ -36,7 +35,7 @@ function generateReservationId() {
 
 /**
  * 営業時間チェック
- * @param {string} time - 時刻文字列 (HH:MM:SS)
+ * @param {string} time - 時刻文字列 (HH:MM)
  * @returns {boolean} 営業時間内ならtrue
  */
 function isWithinBusinessHours(time) {
@@ -138,9 +137,9 @@ export default async function handler(req, res) {
     // 時間フォーマット調整（HH:MM → HH:MM:SS）
     const formattedTime = time.length === 5 ? `${time}:00` : time;
     
-    // 予約データを作成（store_idを確実にrestaurant-002に設定）
+    // 予約データを作成
     const reservation = {
-      store_id: 'restaurant-002',  // Account 2は必ずrestaurant-002
+      store_id: store_id || getEnv('STORE_ID', 'restaurant-002'),
       customer_name: customer_name.trim(),
       user_id: user_id || 'guest',
       date: date,
@@ -154,7 +153,7 @@ export default async function handler(req, res) {
       updated_at: new Date().toISOString()
     };
     
-    console.log('新規予約を保存中 (Account 2):', reservation);
+    console.log('新規予約を保存中:', reservation);
     
     // Supabaseに保存
     const { data, error } = await supabase
@@ -171,7 +170,7 @@ export default async function handler(req, res) {
       });
     }
     
-    console.log('予約保存成功 (ID:', data.id, ')');
+    console.log('予約保存成功:', data);
     
     // 成功レスポンス
     return res.status(200).json({
