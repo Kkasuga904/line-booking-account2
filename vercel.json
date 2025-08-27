@@ -1,15 +1,1 @@
-{
-  "version": 2,
-  "functions": {
-    "api/*.js": {
-      "maxDuration": 10
-    },
-    "api/*.cjs": {
-      "maxDuration": 10
-    }
-  },
-  "rewrites": [
-    { "source": "/webhook", "destination": "/api/webhook-v5" },
-    { "source": "/admin", "destination": "/admin.html" }
-  ]
-}
+{}
