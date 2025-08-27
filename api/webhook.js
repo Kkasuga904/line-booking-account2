@@ -1,2 +1,2 @@
-// Redirect to webhook-main
-export { default } from './webhook-main.js';
+// Use working webhook
+export { default } from './webhook-working.js';
