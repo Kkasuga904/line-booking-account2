@@ -47,6 +47,55 @@ async function replyMessage(replyToken, messages) {
 }
 
 /**
+ * ウェルカムメッセージ作成（クイックリプライ付き）
+ * @returns {Object} メッセージオブジェクト
+ */
+function createWelcomeMessage() {
+  const storeName = decodeURIComponent(getEnv('STORE_NAME', '店舗2号店'));
+  
+  return {
+    type: 'text',
+    text: `${storeName}へようこそ！\n\nご予約はカレンダーからどうぞ📅`,
+    quickReply: {
+      items: [
+        {
+          type: 'action',
+          action: {
+            type: 'uri',
+            label: '📅 カレンダーで予約',
+            uri: 'https://liff.line.me/2008001308-gDrXL5Y1'
+          }
+        },
+        {
+          type: 'action',
+          action: {
+            type: 'message',
+            label: '✏️ テキストで予約',
+            text: 'テキスト予約'
+          }
+        },
+        {
+          type: 'action',
+          action: {
+            type: 'message',
+            label: '📋 予約確認',
+            text: '予約確認'
+          }
+        },
+        {
+          type: 'action',
+          action: {
+            type: 'message',
+            label: '❌ キャンセル',
+            text: '予約キャンセル'
+          }
+        }
+      ]
+    }
+  };
+}
+
+/**
  * メニューメッセージ作成（Flex Message形式）
  * @returns {Object} Flex Messageオブジェクト
  */
@@ -102,14 +151,25 @@ function createMenuMessage() {
           {
             type: 'button',
             action: {
-              type: 'message',
-              label: '📝 テキストで予約',
-              text: 'テキスト予約'
+              type: 'uri',
+              label: '📅 カレンダーで予約',
+              uri: 'https://liff.line.me/2008001308-gDrXL5Y1'
             },
             style: 'primary',
             height: 'sm',
             margin: 'md',
             color: '#764ba2'
+          },
+          {
+            type: 'button',
+            action: {
+              type: 'message',
+              label: '📝 テキストで予約',
+              text: 'テキスト予約'
+            },
+            style: 'secondary',
+            height: 'sm',
+            margin: 'md'
           },
           {
             type: 'button',
