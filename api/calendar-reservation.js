@@ -1,10 +1,11 @@
 /**
- * カレンダーからの予約受付API
+ * カレンダーからの予約受付API - Version 2.0.1
+ * Deploy Date: 2025-08-27
  * 
  * 主な機能：
  * - LIFFカレンダーUIからの予約受付
  * - バリデーション処理
- * - Supabaseデータベースへの保存
+ * - Supabaseデータベースへの保存（確実に保存）
  * - 予約ID発行
  * - 環境変数の自動サニタイズ
  */
@@ -73,6 +74,10 @@ function validateDate(dateStr) {
 }
 
 export default async function handler(req, res) {
+  console.log('=== Calendar Reservation API v2.0.1 Start ===');
+  console.log('Method:', req.method);
+  console.log('Body:', JSON.stringify(req.body));
+  
   // CORS設定
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
