@@ -1169,10 +1169,10 @@
             document.getElementById('confirmSubmitBtn').disabled = true;
             document.getElementById('confirmSubmitBtn').textContent = '送信中...';
             
-            // APIエンドポイント（v2.0.1に更新）
+            // APIエンドポイント（reservation-apiに変更してキャッシュ回避）
             const apiUrl = window.location.hostname === 'localhost' 
-                ? 'http://localhost:3000/api/calendar-reservation-v2'
-                : '/api/calendar-reservation-v2';
+                ? 'http://localhost:3000/api/reservation-api'
+                : '/api/reservation-api';
             
             try {
                 const response = await fetch(apiUrl, {
