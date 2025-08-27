@@ -1,4 +1,4 @@
-// LINE Webhook for Account 2 - Using Fixed version (即200返す版)
-import webhookFixed from './webhook-fixed.js';
+// LINE Webhook for Account 2 - Using Test version
+import webhookTest from './webhook-test.js';
 
-export default webhookFixed;
+export default webhookTest;
