@@ -1,4 +1,4 @@
-// LINE Webhook for Account 2 - Using Test version
-import webhookTest from './webhook-test.js';
+// LINE Webhook for Account 2 - Using Minimal version
+import webhookMinimal from './webhook-minimal.js';
 
-export default webhookTest;
+export default webhookMinimal;

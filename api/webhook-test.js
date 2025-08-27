@@ -1,8 +1,8 @@
 // 最小限のテスト用Webhook（有識者のアドバイスに基づく）
 
-export default async function handler(req, res) {
+export default function handler(req, res) {
   // 1) まず即200返す（再送抑止）- これが最重要！
-  res.status(200).end();
+  res.status(200).json({ ok: true });
 
   try {
     const event = req.body.events?.[0];
