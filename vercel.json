@@ -9,7 +9,7 @@
     }
   },
   "rewrites": [
-    { "source": "/webhook", "destination": "/api/webhook" },
+    { "source": "/webhook", "destination": "/api/webhook-simple" },
     { "source": "/admin", "destination": "/admin.html" }
   ]
 }
