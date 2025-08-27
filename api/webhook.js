@@ -1,4 +1,5 @@
 // LINE Webhook - Using https module for better compatibility
+// Updated: 2025-08-27 - Force cache clear
 import https from 'https';
 
 export default async function handler(req, res) {
