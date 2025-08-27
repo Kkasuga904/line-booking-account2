@@ -1,8 +1,13 @@
-// LINE Webhook Handler - Version 3.0 - NO FETCH
+// LINE Webhook Handler - Version 3.0.1 - NO FETCH
+// Deploy Date: 2025-08-27
+// IMPORTANT: Update VERSION when making changes to force cache refresh
 const https = require('https');
 
+const WEBHOOK_VERSION = '3.0.1';
+const DEPLOY_DATE = '2025-08-27';
+
 exports.default = async function handler(req, res) {
-  console.log('=== Webhook v3.0 Start ===');
+  console.log(`=== Webhook v${WEBHOOK_VERSION} Start (${DEPLOY_DATE}) ===`);
   
   // 即座に200を返す
   res.status(200).end();
