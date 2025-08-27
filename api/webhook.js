@@ -1,100 +1,98 @@
-// LINE Webhook - Using https module for better compatibility
-// Updated: 2025-08-27 - Force cache clear
-import https from 'https';
+// LINE Webhook Handler - Version 3.0 - NO FETCH
+const https = require('https');
 
-export default async function handler(req, res) {
-  console.log('=== Webhook Start ===');
+exports.default = async function handler(req, res) {
+  console.log('=== Webhook v3.0 Start ===');
   
-  // 即座に200を返す（重要！）
+  // 即座に200を返す
   res.status(200).end();
   
-  // 非同期で処理
+  // バックグラウンドで処理
+  processWebhook(req.body).catch(err => {
+    console.error('Background process error:', err);
+  });
+};
+
+async function processWebhook(body) {
   try {
-    console.log('Body received:', JSON.stringify(req.body));
+    console.log('Body:', JSON.stringify(body));
     
-    if (!req.body?.events || req.body.events.length === 0) {
-      console.log('No events to process');
+    if (!body?.events?.[0]) {
+      console.log('No events');
       return;
     }
     
-    const event = req.body.events[0];
-    if (event.type !== 'message' || event.message.type !== 'text') {
-      console.log('Not a text message, skipping');
+    const event = body.events[0];
+    if (event.type !== 'message' || event.message?.type !== 'text') {
+      console.log('Not a text message');
       return;
     }
     
-    console.log('Processing message:', event.message.text);
-    if (event.source?.userId) {
-      console.log('From user:', event.source.userId);
-    }
+    console.log('Message:', event.message.text);
+    console.log('User:', event.source?.userId || 'unknown');
     
-    // LINE Reply API
     const token = process.env.LINE_CHANNEL_ACCESS_TOKEN;
     if (!token) {
-      console.error('ERROR: No LINE_CHANNEL_ACCESS_TOKEN in environment variables!');
+      console.error('NO TOKEN!');
       return;
     }
     
-    console.log('Token exists, sending reply...');
+    console.log('Token found, preparing reply...');
     
-    // Using https module instead of fetch
+    // HTTPSで送信
     const postData = JSON.stringify({
       replyToken: event.replyToken,
       messages: [{
-        type: 'text',  
-        text: `メッセージありがとうございます！\n\nご予約はカレンダーからどうぞ：\nhttps://liff.line.me/2008001308-gDrXL5Y1`
+        type: 'text',
+        text: 'メッセージありがとうございます！\n予約はこちら：\nhttps://liff.line.me/2008001308-gDrXL5Y1'
       }]
     });
     
-    const options = {
-      hostname: 'api.line.me',
-      port: 443,
-      path: '/v2/bot/message/reply',
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-        'Content-Length': Buffer.byteLength(postData)
-      }
-    };
-    
-    console.log('Sending to LINE API...');
-    const replyRequest = https.request(options, (replyRes) => {
-      console.log('LINE API Response Status:', replyRes.statusCode);
-      console.log('LINE API Response Headers:', replyRes.headers);
-      
-      let data = '';
-      
-      replyRes.on('data', (chunk) => {
-        data += chunk;
-      });
-      
-      replyRes.on('end', () => {
-        console.log('LINE API Response Body:', data);
-        if (replyRes.statusCode === 200) {
-          console.log('✅ Reply sent successfully!');
-        } else {
-          console.error('❌ LINE API ERROR:', replyRes.statusCode);
-          console.error('Error details:', data);
-          console.error('Token preview:', token.substring(0, 10) + '...' + token.slice(-4));
+    return new Promise((resolve, reject) => {
+      const options = {
+        hostname: 'api.line.me',
+        port: 443,
+        path: '/v2/bot/message/reply',
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+          'Content-Length': Buffer.byteLength(postData)
         }
+      };
+      
+      console.log('Sending HTTPS request to LINE...');
+      
+      const req = https.request(options, (res) => {
+        console.log('LINE Response Status:', res.statusCode);
+        
+        let data = '';
+        res.on('data', (chunk) => {
+          data += chunk;
+        });
+        
+        res.on('end', () => {
+          console.log('LINE Response:', data);
+          if (res.statusCode === 200) {
+            console.log('✅ SUCCESS!');
+          } else {
+            console.error('❌ FAILED:', res.statusCode);
+          }
+          resolve();
+        });
       });
+      
+      req.on('error', (e) => {
+        console.error('HTTPS Error:', e);
+        reject(e);
+      });
+      
+      req.write(postData);
+      req.end();
+      console.log('Request sent');
     });
     
-    replyRequest.on('error', (e) => {
-      console.error('HTTPS Request error:', e.message);
-      console.error('Error stack:', e.stack);
-    });
-    
-    console.log('Writing POST data:', postData);
-    replyRequest.write(postData);
-    replyRequest.end();
-    console.log('Request sent to LINE API');
-    
-  } catch (e) {
-    console.error('Exception in webhook:', e.message);
-    console.error(e.stack);
+  } catch (err) {
+    console.error('Process error:', err);
   }
-  
-  console.log('=== Webhook End ===');
 }
