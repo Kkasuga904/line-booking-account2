@@ -24,7 +24,9 @@ export default async function handler(req, res) {
     }
     
     console.log('Processing message:', event.message.text);
-    console.log('From user:', event.source.userId);
+    if (event.source?.userId) {
+      console.log('From user:', event.source.userId);
+    }
     
     // LINE Reply API
     const token = process.env.LINE_CHANNEL_ACCESS_TOKEN;
