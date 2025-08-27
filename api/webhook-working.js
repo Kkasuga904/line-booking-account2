@@ -1,5 +1,5 @@
-// Working webhook with LINE reply
-export default async function handler(req, res) {
+// Working webhook with LINE reply - Direct implementation
+async function webhookHandler(req, res) {
   // 即座に200を返す（重要！）
   res.status(200).end();
   
@@ -50,3 +50,5 @@ export default async function handler(req, res) {
     console.error('Webhook error:', e);
   }
 }
+
+export default webhookHandler;
