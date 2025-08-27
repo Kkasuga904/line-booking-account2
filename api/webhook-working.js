@@ -5,7 +5,11 @@ export default async function handler(req, res) {
   
   // 非同期で処理
   try {
-    if (!req.body?.events) return;
+    console.log('Webhook received:', JSON.stringify(req.body));
+    if (!req.body?.events) {
+      console.log('No events in body');
+      return;
+    }
     
     const event = req.body.events[0];
     if (!event || event.type !== 'message') return;
