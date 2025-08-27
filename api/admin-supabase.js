@@ -20,7 +20,7 @@ export default async function handler(req, res) {
   if (req.method === 'GET') {
     try {
       // Account2用のstore_id
-      const storeId = (process.env.STORE_ID || 'account-002').trim();
+      const storeId = (process.env.STORE_ID || 'restaurant-002').trim();
       console.log('Fetching reservations for store_id:', storeId);
       
       // 予約データを取得
@@ -56,7 +56,7 @@ export default async function handler(req, res) {
       return res.status(500).json({
         status: 'error',
         error: err.message,
-        store_id: (process.env.STORE_ID || 'account-002').trim(),
+        store_id: (process.env.STORE_ID || 'restaurant-002').trim(),
         total: 0,
         reservations: []
       });

@@ -104,7 +104,7 @@ function createWelcomeMessage() {
  * @returns {Object} Flex Messageオブジェクト
  */
 function createMenuMessage() {
-  const storeId = getEnv('STORE_ID', 'account-002');
+  const storeId = getEnv('STORE_ID', 'restaurant-002');
   const storeName = decodeURIComponent(getEnv('STORE_NAME', '店舗2号店'));
   const openHour = getEnv('OPEN_HOUR', '10');
   const closeHour = getEnv('CLOSE_HOUR', '21');

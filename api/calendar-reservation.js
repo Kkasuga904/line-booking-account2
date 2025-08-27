@@ -125,7 +125,7 @@ export default async function handler(req, res) {
     // 予約データを作成
     const reservation = {
       id: generateReservationId(),
-      store_id: store_id || getEnv('STORE_ID', 'account-002'),
+      store_id: store_id || getEnv('STORE_ID', 'restaurant-002'),
       customer_name: customer_name.trim(),
       date: date,
       time: time.substring(0, 5), // HH:MM形式に統一
