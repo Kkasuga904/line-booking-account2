@@ -1,4 +1,4 @@
-// LINE Webhook for Account 2 - Redirect to improved version
-import webhookImproved from './webhook-improved.js';
+// LINE Webhook for Account 2 - Using Supabase version
+import webhookSupabase from './webhook-supabase.js';
 
-export default webhookImproved;
+export default webhookSupabase;
